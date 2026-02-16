@@ -1,0 +1,44 @@
+{
+  "name": "plugin-canary",
+  "version": "0.0.1",
+  "description": "Claude Code Canary. Early warning system for Claude Code plugin security.",
+  "author": {
+    "name": "Geoffrey Young (and Claude Opus 4.6)",
+    "email": "geoffrey.young@gmail.com"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/discover.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/gate.py pre"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/gate.py post"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "anthropic-hackathon-2026",
+  "description": "Geoff's Built with Opus 4.6: a Claude Code Hackathon marketplace",
+  "owner": {
+    "name": "Geoffrey Young",
+    "email": "geoffrey.young@gmail.com"
+  },
+  "metadata": {
+    "description": "Geoff's Built with Opus 4.6: a Claude Code Hackathon marketplace"
+  },
+  "plugins": [
+    {
+      "name": "plugin-canary",
+      "source": "./plugins/plugin-canary",
+      "description": "Claude Code Canary.  Early warning system for Claude Code plugin security.",
+      "version": "0.0.1",
+      "author": {
+        "name": "Geoffrey Young (and Claude Opus 4.6)",
+        "email": "geoffrey.young@gmail.com"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/geoffrey-young/anthropic-hackathon-2026"
+    }
+  ]
+}

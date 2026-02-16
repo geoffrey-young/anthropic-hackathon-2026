@@ -1,0 +1,6 @@
+.bash_sessions_disable
+__pycache__
+*.pyc
+.DS_Store
+plugins/plugin-canary/resources/state.json
+CHECKLIST

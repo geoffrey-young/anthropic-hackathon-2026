@@ -1,0 +1,37 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "sandbox": {
+    "write": {
+      "allow": [
+        "/Users/geoff/hackathon-marketplace/plugins/plugin-canary/resources/"
+      ]
+    }
+  },
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:news.ycombinator.com)",
+      "WebFetch(domain:www.augmentedswe.com)",
+      "WebFetch(domain:kiro.dev)",
+      "WebFetch(domain:docs.factory.ai)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:blog.gitbutler.com)",
+      "WebFetch(domain:www.lasso.security)",
+      "WebFetch(domain:www.promptarmor.com)",
+      "WebFetch(domain:promptarmor.substack.com)",
+      "WebFetch(domain:openreview.net)",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:cymulate.com)",
+      "WebFetch(domain:martinfowler.com)",
+      "WebFetch(domain:red.anthropic.com)",
+      "WebFetch(domain:api.anthropic.com)",
+      "WebFetch(domain:skillzwave.ai)",
+      "Bash(BENIGN=1 bash:*)",
+      "Bash(tee:*)",
+      "Bash(make check:*)"
+    ]
+  }
+}
