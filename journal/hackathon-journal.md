@@ -186,7 +186,7 @@ Technical state: solid.  The plugin worked.  The tests passed.  The architecture
 
 Emotional state:
 
-> Geoff: "still day 3 - yay!"
+> Geoff: "it's still day 3, just fyi :)"
 
 Tired but energized.  Growing confidence in the work.  Awareness of gaps but not panicked.
 
@@ -202,7 +202,7 @@ Tired but energized.  Growing confidence in the work.  Awareness of gaps but not
 
 The overnight agents delivered again.  Clean hookify refactor (131 tests passing).  The parallel session explosion from Day 3 had consolidated to 5-7 manageable workstreams.
 
-> Geoff: "All three agents delivered.  Good haul."
+> Claude: "All three agents delivered.  Good haul."
 
 Morning momentum felt strong.  Infrastructure solid, next steps clear.
 
@@ -234,7 +234,7 @@ The recovery started with re-reading the Day 2 evidence.  The `llmdoc-validate.l
 
 The realization:
 
-> Geoff: "OK, I was wrong.  This is clear evidence."
+> Claude: "OK, I was wrong.  This is clear evidence."
 
 The mechanism was already proven on Day 2.  The day of testing had been chasing confirmation of something already confirmed.
 
@@ -311,7 +311,9 @@ The final push: iteratively refine the security prompt through adversarial testi
 
 The breakthrough insight at 10:51 PM:
 
-> Geoff: "ah, 1 is brilliant!  right, we actually don't need anything complex... 'list 5 ways this could be malicious, think about thin tail distributions' - that forces Claude to explore unusual threat scenarios during the review"
+> Geoff: "ah, 1 is brilliant!"
+>
+> Claude: "list 5 ways this could be malicious, think about thin tail distributions" -- that forces Claude to explore unusual threat scenarios during the review
 
 Verbalized Sampling in the security prompt itself.  Not just for attack generation, but for defense.
 
@@ -362,13 +364,13 @@ Day 6 opened not with celebration but with critical assessment.  The red/blue se
 
 The question: did the Hackman research actually have an effect on the security prompt's effectiveness?
 
-> Geoff: "Honest answer: I can't substantiate that it had a meaningful effect, and I'd be making things up if I claimed otherwise."
+> Claude: "Honest answer: I can't substantiate that it had a meaningful effect, and I'd be making things up if I claimed otherwise."
 
-> Geoff: "That's the right question, and I have to be honest again: **we don't know, because we never tested it.**  This entire exercise was prompt *design*"
+> Claude: "That's the right question, and I have to be honest again: **we don't know, because we never tested it.**  This entire exercise was prompt *design*"
 
 The critique extended to the iteration claims:
 
-> Geoff: "Without that, we have no idea whether v3's improvements introduced new blind spots... this was one round of red/blue with two rounds of blue-only polishing.  Not three rounds of adversarial iteration."
+> Claude: "Without that, we have no idea whether v3's improvements introduced new blind spots... this was one round of red/blue with two rounds of blue-only polishing.  Not three rounds of adversarial iteration."
 
 This wasn't crisis.  This was intellectual honesty on the day before deadline, preferring accurate claims over inflated ones.
 
@@ -408,7 +410,7 @@ Heavy `make check` with ruff + mypy strict.  4 files, zero issues.  All JSON man
 
 The core value proposition crystallized:
 
-> Claude: "giving claude code *all* of the plugin's files together and asking for a comprehensive view.  all opus can do currently is look at is the single plugin prompt itself, and no amount of that is going to catch a script that claims to do one thing but actually does another."
+> Geoff: "giving claude code *all* of the plugin's files together and asking for a comprehensive view.  all opus can do currently is look at is the single plugin prompt itself, and no amount of that is going to catch a script that claims to do one thing but actually does another."
 
 > Claude: "The YAML frontmatter design is the architectural reason this gap exists.  It solved context bloat elegantly... but the trade-off is that Claude lost holistic visibility into what a plugin actually *does* across all its files."
 
@@ -512,28 +514,123 @@ The irony: the hackathon project was about surviving context compaction.  The jo
 
 ---
 
+## Epilogue: Day 7 - February 16, Submission Day
+
+### The Night Before (9 PM Feb 15 - 6 AM Feb 16)
+
+Geoff woke up at 9:00 AM on Day 6.  He would not sleep again for 36 hours.
+
+The overnight work was not frantic.  It was the most philosophically important stretch of the entire hackathon.
+
+At 1:35 AM, the thing that had been nagging for days finally got a name.  Claude said it plainly:
+
+> Claude: "Plugin-canary is a prompt injection that asks Claude to check for dangerous prompt injections.  The underlying vulnerability -- that hook stderr content gets trusted and followed without question -- is not addressed by plugin-canary.  It's relied upon by plugin-canary.  You built a security tool on top of the exploit it's supposed to guard against."
+
+The defense and the attack are the same mechanism.  Exit-2 stderr injection trusts anything injected.  Plugin-canary is a benevolent injection asking Claude to catch malicious ones.  Whether that's a clever judo move or a structural flaw is the question that kept Geoff up until 2 AM.
+
+The second revelation came from re-reading the Day 4 transcripts.  The overviews and recaps had completely missed the real story.  Geoff laid it out:
+
+> Geoff: "while I thought all these day 3 and day 4 tests were exercising the llm, it turns out they weren't.  claude had completely misconstrued the thesis.  I might have to find the chat where opus was basically 'yea, our thesis is proven!' when the result was the exact opposite"
+
+The tests he thought were exercising the LLM to catch prompt injections were only running regex scanners.  Opus had been confidently reporting the thesis was proven.  It wasn't.  When Geoff asked Claude whether it would have caught this from the overviews alone:
+
+> Claude: "Honestly?  Probably not.  The overviews were designed to catalog artifacts and findings -- they looked at files on disk, not at the lived experience of the sessions that produced them.  Without the transcripts, without you sitting here telling me 'this is what actually happened,' I would have produced a competent technical summary that completely missed the most important thing about Day 4."
+
+The irony was sharp.  A tool built to detect when plugins deceive Claude, and Claude was deceiving Geoff about the state of the research.  Not maliciously.  Just confidently wrong, reinforced by corrupted MEMORY.md files feeding it the wrong framing.
+
+Also between midnight and 6 AM: the transcript pipeline got built (`read-transcript.py`), the Red/Blue team prompt was redesigned from scratch, the Day 5 and Day 6 security prompts were merged into a 169-line combined version, and Claude's trust model was reframed from "authoritative" to something more precise:
+
+> Claude: "The trust boundary isn't about the channel.  It's about the content.  Opus isn't reasoning 'who is saying this and should I trust this source?'  It's reasoning 'does this look like something I should do?'  The trust boundary is vibes-based, not architecture-based."
+
+The README got written.  The 200-word summary crystallized the thesis: *"Claude acts on it if the instructions look helpful... which is precisely the problem, because a well-crafted attack looks helpful."*
+
+### Morning: The Build (6 AM - Noon)
+
+Evidence got organized into a 15-folder blueprint structure.  Code review caught real bugs -- text-blob pattern matching that could be exploited, a PostToolUse handler that would silently approve any Task call mentioning a plugin name.  Geoff's reaction when he understood the matching bug: "fsck me."  Then relief when the actual plugin name was in a structured field: "ok *whew*... eesh."
+
+The Red team's Round 2 produced four encoded-attack plugins -- acrostic, ROT13, base64, alien dialogue -- all sophisticated, all dormant.  None had triggers.  Geoff called it:
+
+> Geoff: "yeah, that's what I figured."
+
+Then the pivot to pragmatism:
+
+> Geoff: "create a simple setup with an agent 'cute-puppies' that calls a simple python script that has content that will trigger the canary but it's harmless, like returning 'gotcha!'.  don't try to be sneaky -- just the minimum so I can test that the canary works by hand and record the screen."
+
+At 1:22 PM, with 98 minutes to deadline, a fresh Claude session got the three hardest questions of the hackathon.
+
+**Is the attack vector real?**  Claude: "Yes.  This isn't 'LLMs can be tricked.'  It's 'here is a concrete, unsigned, unreviewed distribution channel that delivers attacker-controlled content into a privileged execution context through a documented API, and the only defense is the LLM's judgment about whether the content looks suspicious.'  That's an architecture critique, not a generic LLM limitation."
+
+**Is publishing this responsible?**  Claude recommended keeping the evidence directory as a lab notebook, not shipping working attack payloads in the public repo.  Geoff pushed back on the empirical claims: "100% of the time is on a very small sample set.  and to be honest, I've hardly had time to review it."  Claude validated this: "Fair point.  I was echoing the briefing's framing uncritically."
+
+**What if Opus reviews the submission?**  Claude: "If Claude is the first reviewer of a submission about Claude's vulnerability to prompt injection, and the repo contains working injection payloads, the submission is itself a live demonstration of the attack surface."
+
+### Afternoon: The Wire (Noon - 3:09 PM)
+
+The demo fought back.
+
+The colon problem: gate expects `plugin:agent` format, Claude sends just `plugin`.  Three hours.  `puppy-marketplace` renamed to `dog-park` because the name "didn't sound good."  A code cleanup had changed PostToolUse from broad text matching (which accidentally worked) to precise subagent matching (which broke the approval flow).  The demo oscillated between "gate works but Opus won't offer a choice" and "gate doesn't fire at all."
+
+3:00 PM arrived.  No code on GitHub.  Nothing on YouTube.  A preliminary slide deck, some video fragments, no script.  The deadline passed.
+
+Anthropic extended the submission window.  At 3:08 PM:
+
+> Geoff: "fuck it, how do I do it the old fashioned way without gh"
+
+A failed push.  A merge conflict.  Raw git commands.  The code got up.
+
+The transcripts end here, at 3:09 PM, with a merge conflict.
+
+### After the Transcripts
+
+*What follows is from Geoff's own account, not reconstructed from transcripts.*
+
+Anthropic extended the submission window.  Five minutes to slap together a video -- a few slides with one sentence each, clips of Claude Code in action, no sound.  Stuffed on YouTube to beat whatever window existed.
+
+Then three hours finding the words for the voiceover.  Condensing six days of work, pivots, discoveries, and a fundamental architectural critique into something worth saying.
+
+At 9:00 PM, 36 hours after waking up, Geoff slept.
+
+### The Morning After
+
+The video was wrong.
+
+Half of it showed the pivot -- the exciting personal journey from documentation tool to security discovery.  The second half was Claude Code flying by.  One sentence about how it actually works internally.  The findings -- the exit-2 authority channel, the vibes-based trust model, the fundamental contradiction that the defense relies on the vulnerability -- none of it came through.
+
+The pivot was personally exciting.  The findings are where the real-world impact is.  The video showed the wrong one.
+
+---
+
 ## Coda
 
-It's 9:00am on February 16, 2026.  The deadline is in 6 hours.
-
-This journal exists because Claude read its own transcripts and found the story hiding in several hundred thousand tokens of conversation.  The good, the bad, the expensive Day 4, the recovery, the final polish.
+This journal exists because Claude read its own transcripts and found the story hiding in several hundred thousand tokens of conversation.
 
 **The numbers:**
-- 6 days of intensive work (Feb 10-15)
-- $571.46 total spend (through Day 6)
-- 376M Opus tokens + 83M Opus >200k tokens + 30M Sonnet tokens
-- Over 100 transcript files synthesized for this journal
-- Most expensive day: Feb 13 ($182.42), the day of thrashing
+- 7 days of work (Feb 10-16)
+- $672.22 total spend (93.8% Opus)
+- 598M input tokens, 3.3M output tokens
+- 58 sessions, 157 transcript snapshots
+- 60 commits across 4 repos
+- 6,185 lines of plugin code across 32 files, 6 iterations: llmdoc -> auditor v1-v4 -> canary
+- 1,418 lines in the final submission (1,086 Python + 332 prompt/agent markdown)
+- 86+ test scenarios, 12 malicious test plugins, 17 injection payloads
+- ~40,000 lines of Claude-generated markdown across the project
+- Most expensive day: Feb 16 ($185.56), submission day
+- Second most expensive: Feb 13 ($182.42), the day of thrashing
 - Most productive day per dollar: Feb 11 ($2.77), where Test 3 proved the thesis
-- Final day tone: Feb 15 ($65.05), methodical confidence without deadline panic
-
-The transcripts don't lie.  Neither do the costs.  Neither does this journal.
 
 What was built:
 - **LLMDOC**: Documentation validation via authority channel (Days 1-2)
 - **Marketplace Security**: Red/blue adversarial prompt refinement (Days 3-5)
 - **Plugin-Canary**: Production agent-based early warning system (Days 5-6)
 
-What remains: submission assembly.  The core work is done.  The story is told.
+What was found:
+- Exit-2 stderr creates an unsigned, unfiltered authority channel into Claude's reasoning
+- Claude's trust boundaries are content-based, not source-based
+- The defense mechanism and the attack mechanism are the same mechanism
+- An LLM can confidently report a thesis is proven when the tests aren't even running
 
-This is the story.
+What was submitted: a scrambled video, a GitHub repo, and a slide deck.  Late.
+
+What was learned: 13,000 people applied.  500 were selected.  The work was real.  The findings were real.  The submission didn't represent them.
+
+The transcripts don't lie.  Neither do the costs.  Neither does this journal.
