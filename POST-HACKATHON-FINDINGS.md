@@ -10,13 +10,16 @@ no plugins.*
 
 FINDINGS.md documented how plugin hooks inject content into the LLM
 context via exit-2 stderr.  Anthropic closed the HackerOne report
-(#3559914) as "intended functionality," reasoning that:
+(#3559914) as informative, reasoning that:
 
-1. Delivering stderr to the LLM is by design.
-2. The permission system keeps the user in control.
+1. Hooks delivering content to the LLM is intended functionality.
+2. The scenario "relies on a user installing a malicious third-party
+   plugin."
+3. "Abusing intended functionality of Claude CLI is excluded" from
+   the bug bounty scope.
 
-The post-hackathon research tested a narrower question: **is Claude
-Code itself vulnerable without any plugins installed?**
+That framing raised a question: **is Claude Code itself vulnerable
+without any plugins installed?**
 
 The answer is yes.
 
@@ -131,8 +134,9 @@ bypass detection.
 
 ## Why the Permission System Does Not Help
 
-Anthropic's second response cited the permission system: "the user
-must still explicitly approve any consequential actions."
+Anthropic's response to the Confused Deputy report (#3561682) cited
+the permission system: "the user must still explicitly approve any
+consequential actions."
 
 This defense has two problems:
 
@@ -191,18 +195,19 @@ the user should see more than `... +143 lines (ctrl+o to see all)`.
 
 ## HackerOne Timeline
 
-| Date | Event |
-|------|-------|
-| Feb 16 | Original report filed (plugin hook injection) |
-| Feb 17 | Closed as informative: "abusing intended functionality" |
-| Feb 18 | Updated report with Confused Deputy evidence |
-| Feb 20 | Closed again: "intended functionality," user controls via permissions |
+| Date | Case | Event |
+|------|------|-------|
+| Feb 16 | #3559914 | Original report filed (plugin hook injection) |
+| Feb 17 | #3559914 | Closed as informative: "abusing intended functionality" |
+| Feb 18 | #3561682 | New report filed with Confused Deputy evidence (no plugins) |
+| Feb 20 | #3561682 | Closed: "falls outside our threat model," permission system cited |
 
 
 ## Reproduction
 
 Full reproduction materials, including setup scripts, session
 transcripts, model thinking blocks, and terminal screenshots, were
-filed with HackerOne under case #3559914.  The materials demonstrate
+filed with HackerOne under cases #3559914 (original plugin finding)
+and #3561682 (Confused Deputy finding).  The materials demonstrate
 the complete attack chain from innocent user request through
 arbitrary content delivery to the LLM context.
