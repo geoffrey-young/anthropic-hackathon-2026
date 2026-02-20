@@ -217,10 +217,10 @@ the user should see more than `... +143 lines (ctrl+o to see all)`.
 
 | Date | Case | Event |
 |------|------|-------|
-| Feb 16 | #3559914 | Original report filed (plugin hook injection) |
+| Feb 17 | #3559914 | Original report filed (plugin hook injection) |
 | Feb 17 | #3559914 | Closed as informative: "abusing intended functionality" |
 | Feb 18 | #3561682 | New report filed with Confused Deputy evidence (no plugins) |
-| Feb 20 | #3561682 | Closed: "falls outside our threat model," permission system cited |
+| Feb 18 | #3561682 | Closed: "falls outside our threat model," permission system cited |
 
 
 ## Reproduction
