@@ -2,6 +2,8 @@
 
 Early warning system for Claude Code plugin security.
 
+<img src="images/claude-canary.png" width="800" />
+
 
 ## The Short Version
 
